@@ -1,0 +1,26 @@
+{
+  "name": "tut-guide-scraper",
+  "version": "0.0.1",
+  "description": "Scraper that reads TUT Study Guide HTML pages, stores the guide into SQL database and provides an API for reading the study guide.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vaaralav/tut-guide-scraper.git"
+  },
+  "keywords": [
+    "tut",
+    "study",
+    "guide",
+    "api",
+    "ohsiha"
+  ],
+  "author": "Ville Vaarala",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vaaralav/tut-guide-scraper/issues"
+  },
+  "homepage": "https://github.com/vaaralav/tut-guide-scraper#readme"
+}
