@@ -4,8 +4,8 @@ var cheerio = require('cheerio');
 
 /**
  * Scrapes a department page for courses
- * @param  {[type]} page [description]
- * @return {[type]}      Courses offered by the department
+ * @param  STRING page HTML page as a String
+ * @return OBJECT      Courses offered by the department
  */
 var scrapeDepartment = function scrapeDepartment(page) {
 	var $ = cheerio.load(page,{ignoreWhitespace: true});
@@ -35,8 +35,11 @@ var scrapeDepartment = function scrapeDepartment(page) {
 
 var scrapeCourse = function scrapeCourse(page) {
 	var $ = cheerio.load(page,{ignoreWhitespace: true});
+
+	console.log($("article h1").text().trim().split(" ",1)[0]);
 }
 
 module.exports = {
-	scrapeDepartment: scrapeDepartment
+	scrapeDepartment: scrapeDepartment,
+	scrapeCourse: scrapeCourse
 };
