@@ -59,11 +59,6 @@ var fixCharset = function fixCharset(res, body) {
   return iconv.decode(buf, charset);
 }
 
-//console.log(scraper["2015"].scrapeDepartment(departmentPage));
-//console.log(scraper["2015"].scrapeCourse(coursePage));
-//console.log(page);
-
-
 /**
  * Export tut-guide-scraper (with )
  */

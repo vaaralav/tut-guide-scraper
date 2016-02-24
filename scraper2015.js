@@ -8,7 +8,7 @@ var cheerio = require('cheerio');
  * @return OBJECT      Array of Courses offered by the department
  */
 var scrapeDepartment = function scrapeDepartment(page) {
-	console.log("Scraping department page...");
+	//console.log("Scraping department page...");
 	var $ = cheerio.load(page,{ignoreWhitespace: true, decodeEntities: false});
 
 	// Get the department name and trim any extra whitespace
@@ -24,10 +24,10 @@ var scrapeDepartment = function scrapeDepartment(page) {
 		var course = splitCourseHeading(text);
 		course.url = $(this).attr("href");
 		course.department = department;
-		console.log("Read course:\n" + JSON.stringify(course, null, 2));
+		//console.log("Read course:\n" + JSON.stringify(course, null, 2));
 		courses.push(course);
 	});
-	console.log("Scraped department \"" + department + "\"!");
+	//console.log("Scraped department \"" + department + "\"!");
 	return courses;
 }
 
@@ -37,7 +37,7 @@ var scrapeDepartment = function scrapeDepartment(page) {
  * @return {[type]}      [description]
  */
 var scrapeCourse = function scrapeCourse(page) {
-	console.log("Scraping course page...");
+	//console.log("Scraping course page...");
 	var $ = cheerio.load(page,{ignoreWhitespace: true, decodeEntities: true});
 	var h1 = $("article h1").text().trim();
 	// Get basic info about the course from the heading
