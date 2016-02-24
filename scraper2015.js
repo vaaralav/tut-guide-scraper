@@ -42,19 +42,24 @@ var scrapeCourse = function scrapeCourse(page) {
 	var h1 = $("article h1").text().trim();
 	// Get basic info about the course from the heading
 	var course = splitCourseHeading(h1);
-  var items = [];
-  var joku = true;
+  course.info = [];
+
 
   $("article h4").each(function readCourseItem(index, element) {
     var title = $(this).text();
-    var content = $(this).nextUntil("h4", "p").text();
+    var content = $(this).nextUntil("h4").text().trim();
     //array.unshift($(this).text());
     //console.log(array);
 
 /*    for (var iter = $(element).next(); $(iter).name !== "h4"; iter = $(iter).next()) {
       console.log(iter);
     }*/
-    course[title] = content;
+
+    course.info.push({
+      title: title,
+      type: ( (content) ? ("text") : ("?") ),
+      content: content
+    });
   });
 
 
