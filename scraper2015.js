@@ -8,12 +8,13 @@ var cheerio = require('cheerio');
  * @return OBJECT      Array of Courses offered by the department
  */
 var scrapeDepartment = function scrapeDepartment(page) {
-	var $ = cheerio.load(page,{ignoreWhitespace: true});
+	console.log("Scraping department page...");
+	var $ = cheerio.load(page,{ignoreWhitespace: true, decodeEntities: false});
 
 	// Get the department name and trim any extra whitespace
 	var department = $("article h2").text().trim();
 	var courses = [];
-	
+
 	// Read list of course links
 	$("article ul li a").each(function readCourse(i, element) {
 		// Get a link to a course and trim extra whitespace.
@@ -26,23 +27,39 @@ var scrapeDepartment = function scrapeDepartment(page) {
 		console.log("Read course:\n" + JSON.stringify(course, null, 2));
 		courses.push(course);
 	});
-
+	console.log("Scraped department \"" + department + "\"!");
 	return courses;
 }
 
 /**
- * [scrapeCourse description]
+ * Scrapes a course page
  * @param  {[type]} page [description]
  * @return {[type]}      [description]
  */
 var scrapeCourse = function scrapeCourse(page) {
-	var $ = cheerio.load(page,{ignoreWhitespace: true});
+	console.log("Scraping course page...");
+	var $ = cheerio.load(page,{ignoreWhitespace: true, decodeEntities: true});
 	var h1 = $("article h1").text().trim();
-	var course = {
-		code: h1.split(" ",1)[0],
-	}
+	// Get basic info about the course from the heading
+	var course = splitCourseHeading(h1);
+  var items = [];
+  var joku = true;
 
-	console.log($("article h1").text().trim().split(" ",1)[0]);
+  $("article h4").each(function readCourseItem(index, element) {
+    var title = $(this).text();
+    var content = $(this).nextUntil("h4", "p").text();
+    //array.unshift($(this).text());
+    //console.log(array);
+
+/*    for (var iter = $(element).next(); $(iter).name !== "h4"; iter = $(iter).next()) {
+      console.log(iter);
+    }*/
+    course[title] = content;
+  });
+
+
+	console.log("Read course:\n" + JSON.stringify(course, null, 2));
+	return course;
 }
 
 /**
@@ -51,7 +68,7 @@ var scrapeCourse = function scrapeCourse(page) {
  * @return {Object}         Course object with
  *                                 - code {String} Course code
  *                                 - name {String} Course name
- *                                 - credits {String} How many credits one gets 
+ *                                 - credits {String} How many credits one gets
  *                                 from the course
  *                          Return null if the heading param is invalid.
  */
@@ -59,7 +76,8 @@ var splitCourseHeading = function splitCourseHeading(heading) {
 	// Remove extra white space
 	heading = heading.trim();
 
-	if(!heading || heading.length == 0 ) {
+	// Check for dumb text
+	if(!heading || heading.length === 0 ) {
 		return null;
 	}
 
