@@ -5,7 +5,7 @@ var cheerio = require('cheerio');
 /**
  * Scrapes a department page for courses
  * @param  STRING page HTML page as a String
- * @return OBJECT      Courses offered by the department
+ * @return OBJECT      Array of Courses offered by the department
  */
 var scrapeDepartment = function scrapeDepartment(page) {
 	var $ = cheerio.load(page,{ignoreWhitespace: true});
@@ -14,6 +14,7 @@ var scrapeDepartment = function scrapeDepartment(page) {
 	var department = $("article h2").text().trim();
 	var courses = [];
 	
+	// Read list of course links
 	$("article ul li a").each(function readCourse(i, element) {
 		// Get a link to a course and trim extra whitespace.
 		var text = $(this).text().trim();
@@ -23,6 +24,8 @@ var scrapeDepartment = function scrapeDepartment(page) {
 			// The course code. Eg. ARK-94006
 			// STRING
 			code: text.split(" ",1)[0],
+			name: text.slice(text.indexOf(" ") + 1, text.lastIndexOf(",")),
+			credits: text.slice(text.lastIndexOf(", ") + 2, text.lastIndexOf(" op")),
 			url: $(this).attr("href"),
 			department: department
 		};
@@ -32,7 +35,11 @@ var scrapeDepartment = function scrapeDepartment(page) {
 	return courses;
 }
 
-
+/**
+ * [scrapeCourse description]
+ * @param  {[type]} page [description]
+ * @return {[type]}      [description]
+ */
 var scrapeCourse = function scrapeCourse(page) {
 	var $ = cheerio.load(page,{ignoreWhitespace: true});
 
