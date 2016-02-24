@@ -20,15 +20,10 @@ var scrapeDepartment = function scrapeDepartment(page) {
 		var text = $(this).text().trim();
 
 		// This course will be added to courses
-		var course = {
-			// The course code. Eg. ARK-94006
-			// STRING
-			code: text.split(" ",1)[0],
-			name: text.slice(text.indexOf(" ") + 1, text.lastIndexOf(",")),
-			credits: text.slice(text.lastIndexOf(", ") + 2, text.lastIndexOf(" op")),
-			url: $(this).attr("href"),
-			department: department
-		};
+		var course = splitCourseHeading(text);
+		course.url = $(this).attr("href");
+		course.department = department;
+		console.log("Read course:\n" + JSON.stringify(course, null, 2));
 		courses.push(course);
 	});
 
@@ -42,9 +37,39 @@ var scrapeDepartment = function scrapeDepartment(page) {
  */
 var scrapeCourse = function scrapeCourse(page) {
 	var $ = cheerio.load(page,{ignoreWhitespace: true});
+	var h1 = $("article h1").text().trim();
+	var course = {
+		code: h1.split(" ",1)[0],
+	}
 
 	console.log($("article h1").text().trim().split(" ",1)[0]);
 }
+
+/**
+ * Splits course heading eg. "ARK-11000 Johdatus yliopisto-opintoihin, 2 op"
+ * @param  {String} heading Course code name and credits in one string.
+ * @return {Object}         Course object with
+ *                                 - code {String} Course code
+ *                                 - name {String} Course name
+ *                                 - credits {String} How many credits one gets 
+ *                                 from the course
+ *                          Return null if the heading param is invalid.
+ */
+var splitCourseHeading = function splitCourseHeading(heading) {
+	// Remove extra white space
+	heading = heading.trim();
+
+	if(!heading || heading.length == 0 ) {
+		return null;
+	}
+
+	return {
+		code: heading.split(" ",1)[0],
+		name: heading.slice(heading.indexOf(" ") + 1, heading.lastIndexOf(",")),
+		credits: heading.slice(heading.lastIndexOf(", ") + 2, heading.lastIndexOf(" op")),
+	}
+}
+
 
 module.exports = {
 	scrapeDepartment: scrapeDepartment,
