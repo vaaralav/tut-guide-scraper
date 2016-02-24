@@ -4,8 +4,8 @@
   "description": "Scraper that reads TUT Study Guide HTML pages and converts the study guide pages to JSON.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "test": "node example.js",
+    "start": "node example.js"
   },
   "repository": {
     "type": "git",
@@ -26,11 +26,7 @@
   "homepage": "https://github.com/vaaralav/tut-guide-scraper#readme",
   "dependencies": {
     "cheerio": "^0.20.0",
-    "htmlparser": "^1.7.7",
-    "htmlparser2": "^3.9.0",
     "iconv-lite": "^0.4.13",
-    "json-query": "^1.5.0",
-    "request": "^2.69.0",
-    "x-ray": "^2.0.3"
+    "request": "^2.69.0"
   }
 }
