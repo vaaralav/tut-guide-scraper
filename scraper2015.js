@@ -4,12 +4,12 @@ var cheerio = require('cheerio');
 
 /**
  * Scrapes a department page for courses
- * @param  STRING page HTML page as a String
- * @return OBJECT      Array of Courses offered by the department
+ * @param  {String} page HTML page as a String
+ * @return {Object}      Array of Courses offered by the department
  */
 var scrapeDepartment = function scrapeDepartment(page) {
 	//console.log("Scraping department page...");
-	var $ = cheerio.load(page,{ignoreWhitespace: true, decodeEntities: false});
+	var $ = cheerio.load(page,{ignoreWhitespace: true, decodeEntities: true});
 
 	// Get the department name and trim any extra whitespace
 	var department = $("article h2").text().trim();
@@ -24,46 +24,67 @@ var scrapeDepartment = function scrapeDepartment(page) {
 		var course = splitCourseHeading(text);
 		course.url = $(this).attr("href");
 		course.department = department;
-		//console.log("Read course:\n" + JSON.stringify(course, null, 2));
 		courses.push(course);
 	});
-	//console.log("Scraped department \"" + department + "\"!");
 	return courses;
 }
 
 /**
  * Scrapes a course page
- * @param  {[type]} page [description]
- * @return {[type]}      [description]
+ * @param  {String} page Course page as a string
+ * @return {Object}      Course object
+ *                              - {String} code
+ *                              - {String} name
+ *                              - {String} credits
+ *                              - {Array.<Object>} info
+ *                                - {String} title
+ *                                - {String} type
+ *                                - {String} content
  */
 var scrapeCourse = function scrapeCourse(page) {
-	//console.log("Scraping course page...");
 	var $ = cheerio.load(page,{ignoreWhitespace: true, decodeEntities: true});
 	var h1 = $("article h1").text().trim();
+
 	// Get basic info about the course from the heading
 	var course = splitCourseHeading(h1);
+  // Collect other stuff here
   course.info = [];
-
 
   $("article h4").each(function readCourseItem(index, element) {
     var title = $(this).text();
-    var content = $(this).nextUntil("h4").text().trim();
-    //array.unshift($(this).text());
-    //console.log(array);
+    var type = "?";
+    var content = "";
+    var iter = $(this).next();
+    //console.log($(iter));
+    while($(iter)["0"] && $(iter)["0"].name !== "h4") {
 
-/*    for (var iter = $(element).next(); $(iter).name !== "h4"; iter = $(iter).next()) {
-      console.log(iter);
-    }*/
+      if (!$(iter).text() || $(iter).text().length === 0) {
+        iter = $(iter).next();
+        continue;
+      }
+      if($(iter)["0"].name === "p") {
+        content += $(iter).text();
+        iter = $(iter).next();
+        type = "text";
+        continue;
+      }
+      content += $(iter).text();
+      iter = $(iter).next();
+
+    }
+    //var content = $(this).nextUntil("h4").text().trim();
+
+
+
+    //console.log(content);
 
     course.info.push({
       title: title,
-      type: ( (content) ? ("text") : ("?") ),
+      type: type,
       content: content
     });
   });
 
-
-	console.log("Read course:\n" + JSON.stringify(course, null, 2));
 	return course;
 }
 
