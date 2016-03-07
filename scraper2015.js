@@ -32,6 +32,7 @@ var scrapeDepartment = function scrapeDepartment(page) {
 /**
  * Scrapes a course page
  * @param  {String} page Course page as a string
+ * @param  {Object} Options such as {textOnly: true}
  * @return {Object}      Course object
  *                              - {String} code
  *                              - {String} name
@@ -41,7 +42,7 @@ var scrapeDepartment = function scrapeDepartment(page) {
  *                                - {String} type
  *                                - {String} content
  */
-var scrapeCourse = function scrapeCourse(page) {
+var scrapeCourse = function scrapeCourse(page, options) {
 	var $ = cheerio.load(page,{ignoreWhitespace: true, decodeEntities: true});
 	var h1 = $("article h1").text().trim();
 
@@ -50,13 +51,16 @@ var scrapeCourse = function scrapeCourse(page) {
   // Collect other stuff here
   course.info = [];
 
-  $("article h4").each(function readCourseItem(index, element) {
-    var title = $(this).text();
-    var type = "?";
-    var content = "";
-    var iter = $(this).next();
-    //console.log($(iter));
-    while($(iter)["0"] && $(iter)["0"].name !== "h4") {
+  // Default function without any options
+  if(!options) {
+
+    $("article h4").each(function readCourseItem(index, element) {
+      var title = $(this).text();
+      var type = "?";
+      var content = "";
+      var iter = $(this).next();
+
+      while($(iter)["0"] && $(iter)["0"].name !== "h4") {
 
       if (!$(iter).text() || $(iter).text().length === 0) {
         iter = $(iter).next();
@@ -84,6 +88,8 @@ var scrapeCourse = function scrapeCourse(page) {
       content: content
     });
   });
+
+  }
 
 	return course;
 }
